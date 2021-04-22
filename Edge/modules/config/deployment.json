@@ -1,0 +1,76 @@
+{
+    "modulesContent": {
+      "$edgeAgent": {
+        "properties.desired": {
+          "schemaVersion": "1.0",
+          "runtime": {
+            "type": "docker",
+            "settings": {
+              "minDockerVersion": "v1.25",
+              "loggingOptions": "",
+              "registryCredentials": {
+                "docker": {
+                  "username": "containerRegistryju",
+                  "password": "e2wWPw4pMnr/Zb1HB9MXzqxa5hJRaafz",
+                  "address": "containerregistryju.azurecr.io"
+                }
+              }
+            }
+          },
+          "systemModules": {
+            "edgeAgent": {
+              "type": "docker",
+              "settings": {
+                "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+                "createOptions": "{}"
+              }
+            },
+            "edgeHub": {
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+                "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}"
+              }
+            }
+          },
+          "modules": {
+            "emitmessages": {
+              "version": "1.0",
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "containerregistryju.azurecr.io/emitmessages:1.0.0",
+                "createOptions": "{}"
+              }
+            },
+            "generatemessages": {
+              "version": "1.0",
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "containerregistryju.azurecr.io/generatemessages:1.5.2",
+                "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
+              }
+            }
+            
+          }
+        }
+      },
+      "$edgeHub": {
+        "properties.desired": {
+          "schemaVersion": "1.0",
+          "routes": {
+            "EdgeModuleToIoTHub": "FROM /messages/modules/emitmessages/outputs/* INTO $upstream",
+            "generatemessagesToemitmessages": "FROM /messages/modules/generatemessages/outputs/generatedMessage INTO BrokeredEndpoint(\"/modules/emitmessages/inputs/generatedMessage\")"
+          },
+          "storeAndForwardConfiguration": {
+            "timeToLiveSecs": 7200
+          }
+        }
+      }
+    }
+  }
