@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/.env'});
 
 import { DigitalTwinsClient } from "@azure/digital-twins-core";
-import { DefaultAzureCredential } from '@azure/identity';
+import { DefaultAzureCredential, UsernamePasswordCredential } from '@azure/identity';
 import models from './_models/model';
 import model from "./interfaces/model";
 import relationship from './interfaces/relationship';
@@ -17,8 +17,11 @@ const clientId = process.env['clientId'] || '';
 
 
 //var credentials = new identity.InteractiveBrowserCredential({clientId: clientId, tenantId: tenantId});
-var credentials = new DefaultAzureCredential();
 
+const username = "j.haering@enval.de";
+const password = "Haselnuss&97"
+//var credentials = new DefaultAzureCredential();
+var credentials = new UsernamePasswordCredential(tenantId, clientId, username, password);
 var client =  new DigitalTwinsClient(adtInstanceUrl, credentials);
 
 
@@ -140,11 +143,11 @@ var twin: twin[] = [{
 
 
 const run = async () => {
-    await createModels(client, models);
-    await createTwin(client, twins);
-    //console.log(await queryTwin(client, "SELECT * FROM DigitalTwins"));
+    //await createModels(client, models);
+    //await createTwin(client, twins);
+    console.log(await queryTwin(client, "SELECT * FROM DigitalTwins"));
 
-    await createRelationship(relationships);
+    //await createRelationship(relationships);
     //await listModels(client);    
 }
 run(); 
