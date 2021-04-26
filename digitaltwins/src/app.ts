@@ -18,10 +18,8 @@ const clientId = process.env['clientId'] || '';
 
 //var credentials = new identity.InteractiveBrowserCredential({clientId: clientId, tenantId: tenantId});
 
-const username = "j.haering@enval.de";
-const password = "Haselnuss&97"
-//var credentials = new DefaultAzureCredential();
-var credentials = new UsernamePasswordCredential(tenantId, clientId, username, password);
+var credentials = new DefaultAzureCredential();
+
 var client =  new DigitalTwinsClient(adtInstanceUrl, credentials);
 
 
