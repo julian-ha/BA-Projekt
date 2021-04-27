@@ -61,6 +61,10 @@ var twins: twin[] = [
                 value: 'Küche'
             },
             {
+                key: 'unitNameMaps',
+                value: 'Küche'
+            },
+            {
                 key: 'temperature',
                 value: 0
             },
@@ -108,6 +112,10 @@ var twins: twin[] = [
         properties: [
             {
                 key: 'roomName',
+                value: 'Abstellraum'
+            },
+            {
+                key: 'unitNameMaps',
                 value: 'Abstellraum'
             },
             {
@@ -161,6 +169,10 @@ var twins: twin[] = [
                 value: 'Großraum'
             },
             {
+                key: 'unitNameMaps',
+                value: 'Großraum'
+            },
+            {
                 key: 'temperature',
                 value: 0
             },
@@ -208,6 +220,10 @@ var twins: twin[] = [
         properties: [
             {
                 key: 'roomName',
+                value: 'Besprechungsraum'
+            },
+            {
+                key: 'unitNameMaps',
                 value: 'Besprechungsraum'
             },
             {

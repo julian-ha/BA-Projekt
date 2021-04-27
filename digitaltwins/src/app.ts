@@ -141,11 +141,11 @@ var twin: twin[] = [{
 
 
 const run = async () => {
-    //await createModels(client, models);
-    //await createTwin(client, twins);
-    console.log(await queryTwin(client, "SELECT * FROM DigitalTwins"));
+    await createModels(client, models);
+    await createTwin(client, twins);
+    //console.log(await queryTwin(client, "SELECT * FROM DigitalTwins"));
 
-    //await createRelationship(relationships);
+    await createRelationship(relationships);
     //await listModels(client);    
 }
 run(); 
