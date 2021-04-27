@@ -1,4 +1,4 @@
-export default interface message {
+export default interface message1 {
     status: number,
     heat_stable: boolean,
     gas_index: number, 
@@ -9,7 +9,7 @@ export default interface message {
     gas_resistance: number
 }
 
-export default interface message1 {
+export default interface message {
     timestamp: Date,
     deviceId: string,
     temperature: number,

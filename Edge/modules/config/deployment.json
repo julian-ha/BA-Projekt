@@ -52,7 +52,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/generatemessages:1.5.2",
+                "image": "containerregistryju.azurecr.io/generatemessages:1.6.0",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               }
             }

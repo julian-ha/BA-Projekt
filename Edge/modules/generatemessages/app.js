@@ -35,11 +35,23 @@ Client.fromEnvironment(Transport, (err,client) => {
                 console.log('Module initialized.');
                 setInterval(async () => {
                     try {
-                        var data = await bme680.getSensorData();
+                        //var data = await bme680.getSensorData();
+                        var data = {
+                            timestamp: new Date(),
+                            deviceId: 'Besprechungsraum',
+                            temperature: Math.floor(Math.random() * 50),
+                            humidity: Math.floor(Math.random() * 100),
+                            co2ThresholdRed: 1000,
+                            co2ThresholdYellow: 800,
+                            co2: Math.floor(Math.random() * 1000),
+                            voc: Math.floor(Math.random() * 1000),
+                            light: Math.floor(Math.random() * 1000),
+                            loudness: Math.floor(Math.random() * 150),
+                        }
                     } catch (e) {
                         var data = `${e}`;
                     }
-                    var msg = new Message(JSON.stringify(data.data));
+                    var msg = new Message(JSON.stringify(data));
                     client.sendOutputEvent('generatedMessage', msg, (err, res) => {
                         if (err) {
                             console.log(err);
