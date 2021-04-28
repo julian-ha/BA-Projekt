@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "azure-iot-device": "^1.17.3",
     "azure-iot-device-mqtt": "^1.15.3",
     "bme680-sensor": "^1.0.0"

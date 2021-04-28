@@ -5,19 +5,41 @@ const connectionString: string = "HostName=hubiotju.azure-devices.net;SharedAcce
 
 const moduleId: string = 'generatemessages';
 
+interface parameters {
+    deviceId: string,
+    thresholdRed: number,
+    thresholdYellow: number,
+}
+
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     
     const IoTHubClient: Client = Client.fromConnectionString(connectionString);
+    const parameters: parameters = {
+        deviceId: (req.query.deviceId || req.body && req.body.deviceId),
+        thresholdYellow: (req.query.thresholdYellow || req.body && req.body.thresholdYellow),
+        thresholdRed: (req.query.thresholdRed || req.body && req.body.thresholdRed),
+    }
+    console.log(parameters);
+    if (!parameters.deviceId || !parameters.thresholdYellow || !parameters.thresholdRed) {
+        context.res = {
+            status: 400,
+            body: {
+                errMessage: 'please provide valid Data'
+            }
+        };
+        return
+    }
+
 
     const payload = {
-        test: 'test von Nodejs',
-        number: 1
+        thresholdRed: parameters.thresholdRed,
+        thresholdYellow: parameters.thresholdYellow
     }
     const params = {
-        methodName: 'testmethod',
+        methodName: 'co2lights',
         payload: JSON.stringify(payload)
     }
-    var result = await IoTHubClient.invokeDeviceMethod('DeviceJuHa', moduleId, params);
+    var result = await IoTHubClient.invokeDeviceMethod( parameters.deviceId, moduleId, params);
     context.log(result.result);
 
     context.res = {
