@@ -2,8 +2,8 @@ import { DigitalTwinsClient } from "@azure/digital-twins-core";
 import { AzureFunction, Context } from "@azure/functions"
 import { DefaultAzureCredential, ManagedIdentityCredential } from "@azure/identity";
 
-const digitalTwinsUrl: string = "https://digitaltwins.azure.net";
-const adtInstanceUrl: string = "https://twinju.api.weu.digitaltwins.azure.net";
+const digitalTwinsUrl: string = process.env.digitalTwinsUrl;
+const adtInstanceUrl: string = process.env.adtInstanceUrl;
 
 
 const queryTwin = async (digitalTwinsClient: DigitalTwinsClient, query: string) => {

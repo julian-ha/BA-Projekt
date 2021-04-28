@@ -2,8 +2,8 @@ import { DigitalTwinsClient } from "@azure/digital-twins-core";
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { DefaultAzureCredential, ManagedIdentityCredential } from "@azure/identity";
 
-const digitalTwinsUrl: string = "https://digitaltwins.azure.net";
-const adtInstanceUrl: string = "https://twinju.api.weu.digitaltwins.azure.net";
+const digitalTwinsUrl: string = process.env.digitalTwinsUrl;
+const adtInstanceUrl: string = process.env.adtInstanceUrl;
 
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {

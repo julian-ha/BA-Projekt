@@ -28,8 +28,8 @@ const retrieveTwinData = async (twinId) => {
       axios(config)
       .then(function (response) {
           var twin = response.data[0];
-          co2ThresholdRed = twin.co2ThresholdRed;
-          co2ThresholdYellow = twin.co2ThresholdYellow;
+          co2ThresholdRed = parseInt(twin.co2ThresholdRed);
+          co2ThresholdYellow = parseInt(twin.co2ThresholdYellow);
         console.log(JSON.stringify(response.data));
       })
       .catch(function (error) {
@@ -49,8 +49,8 @@ Client.fromEnvironment(Transport, (err,client) => {
         client.onMethod('co2lights', (req, res) => {
 
             var data = JSON.parse(req.payload);
-            co2ThresholdYellow = data.thresholdYellow;
-            co2ThresholdRed = data.thresholdRed
+            co2ThresholdYellow = parseInt(data.thresholdYellow);
+            co2ThresholdRed = parseInt(data.thresholdRed);
 
             res.send(200, 'method success');
         });

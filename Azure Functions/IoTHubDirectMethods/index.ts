@@ -1,7 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { Client } from 'azure-iothub';
 
-const connectionString: string = "HostName=hubiotju.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=wMrMO3XuY93kn0SPwoo4P1kKspdPi8cBEwIP8UbHs2c="
+const connectionString: string = process.env.IoTHubConnectionString;
 
 const moduleId: string = 'generatemessages';
 

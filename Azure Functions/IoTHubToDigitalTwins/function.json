@@ -5,7 +5,7 @@
       "name": "IoTHubMessages",
       "direction": "in",
       "eventHubName": "iothub-ehub-hubiotju-10164845-0734820e58",
-      "connection": "connectionString",
+      "connection": "connectionStringEventHub",
       "cardinality": "many",
       "consumerGroup": "$Default"
     }
