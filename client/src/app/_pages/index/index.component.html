@@ -1,25 +1,32 @@
-<!-- This example requires Tailwind CSS v2.0+ -->
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 ">
-   
-<div *ngFor="let twin of twins">
-    <div  class="md:flex md:items-center md:justify-between mr-8 py-4">
-        <div class="flex-1 min-w-0 ">
-        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            {{ twin.$dtId }}
-        </h2>
-        </div>
-        <div class="">
-        <button  type="button" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Change Thresholds
-        </button>
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline">
+            <div *ngFor="let twin of twins" class=" column is-3">
+                <div class="twin-card has-background-light">
+                    <h1 class="title is-5 has-text-black has-text-centered">{{ twin.$dtId }}</h1>
+                    <div style="margin:0.5rem">
+                        <p *ngIf="twin.temperature">
+                            Temperature: <span class="rightsided">{{ twin.temperature }} °C</span> <br>
+                            ThresholdYellow: <span class="rightsided"> {{ twin.co2ThresholdYellow }}</span> <br>
+                            ThresholdRed: <span class="rightsided"> {{ twin.co2ThresholdRed }}</span>
+
+                        </p>
+                    </div>
+                    <form [formGroup]="thresholdForm" (ngSubmit)="onSubmit($event)" style="margin:0.5rem">
+                        <div class="field">
+                            <input type="number" formControlName="thresholdYellow" placeholder="Threshold Red"  class="input">
+                        </div>
+                        <div class="field">
+                            <input type="number" formControlName="thresholdRed" placeholder="Threshold Yellow"  class="input">
+                        </div>
+                        <button type="submit" class="button is-link is-rounded is-fullwidth">
+                            Change Thresholds
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <br>
-    <hr>
-    </div>
-</div>
-  
-  
-  
-  
+</section>
+
 

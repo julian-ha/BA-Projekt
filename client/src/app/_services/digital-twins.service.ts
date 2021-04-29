@@ -13,7 +13,6 @@ export class DigitalTwinsService {
     private http: HttpClient,
   ) { }
 
-  functionsUrl: string = 'https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/{twinId?}?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==';
 
   public getTwinData (twinId?: string) {
     console.log(twinId);
