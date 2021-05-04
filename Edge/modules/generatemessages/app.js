@@ -3,42 +3,52 @@
 const Transport = require('azure-iot-device-mqtt').Mqtt;
 const Client = require('azure-iot-device').ModuleClient;
 const Message = require('azure-iot-device').Message;
-const DeviceMethodResponse = require('azure-iot-device').DeviceMethodResponse;
-
 const ambimateClass = require('./ambimate');
 
 const axios = require('axios');
 
-const bme = require('bme680-sensor');
+console.log('starting module');
 
 
-const twinFunctionUrl = "https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/Besprechungsraum?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==";
-var co2ThresholdRed = 9999;
-var co2ThresholdYellow = 9999;
+const twinName = process.env.IOTEDGE_DEVICEID;
 
 var ambimate = new ambimateClass(0x2a, 1);
 
-const delay = async(ms) => {
-    new Promise(resolve => setTimeout(resolve, ms))
-}
 
-const retrieveTwinData = async (twinId) => {
+// Helper function to print results in the console
+const printResultFor = (op) => {
+    return (err, res) => {
+      if (err) {
+        console.log(op + ' error: ' + err.toString());
+      }
+      if (res) {
+        console.log(op + ' status: ' + res.constructor.name);
+      }
+    };
+  }
+
+
+
+const retrieveTwinData = async (client, twinId) => {
     var config = {
         method: 'get',
         url: `https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/${twinId}?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==`,
         headers: { }
       };
       
-      axios(config)
-      .then(function (response) {
+      try {
+          var response = await axios(config);
           var twin = response.data[0];
-          co2ThresholdRed = parseInt(twin.co2ThresholdRed);
-          co2ThresholdYellow = parseInt(twin.co2ThresholdYellow);
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log('Error retrievieng Data from twin');
-      });
+          process.env['co2ThresholdRed'] = parseInt(twin.co2ThresholdRed);
+          process.env['co2ThresholdYellow'] = parseInt(twin.co2ThresholdYellow);
+          client.sendOutputEvent('thresholdData', msg, printResultFor('Sending message to lightsModule'));
+          console.log('retrieved data from Digital Twins');
+          return 
+
+      } catch (err) {
+          console.log('Error retrieving data from Digital Twins');
+          throw(err);
+      }
 }
 
 
@@ -53,12 +63,13 @@ Client.fromEnvironment(Transport, (err,client) => {
         client.onMethod('co2lights', (req, res) => {
 
             var data = JSON.parse(req.payload);
-            co2ThresholdYellow = parseInt(data.thresholdYellow);
-            co2ThresholdRed = parseInt(data.thresholdRed);
-            if (co2ThresholdYellow >= co2ThresholdRed) {
+            if (data.thresholdYellow >= data.thresholdRed) {
                 res.send(400, 'The Thresholdvalue for the red light has to be higher than the one for the yellow light.');
                 return
             } 
+            process.env['co2ThresholdYellow'] = parseInt(data.thresholdYellow);
+            process.env['co2ThresholdRed'] = parseInt(data.thresholdRed);
+            client.sendOutputEvent('thresholdData', msg, printResultFor('Sending message to lightsModule'));
 
             res.send(200, 'method success');
         });
@@ -71,38 +82,31 @@ Client.fromEnvironment(Transport, (err,client) => {
                 setInterval(async() => {
                     try {
 
-                        if(co2ThresholdYellow == 9999) {
+                        if(process.env.co2ThresholdRed == -1 || process.env.co2ThresholdYellow == -1) {
                             console.log('trying to get data from Digitaltwins');
-                            await retrieveTwinData('Besprechungsraum');
+                            await retrieveTwinData(client, twinName);
                         }
-                        var reading = await ambimate.readAll().then((reading) => {
+                        await ambimate.readAll().then((reading) => {
                             console.log(reading);
 
                             var data = {
                                 timestamp: new Date(),
-                                deviceId: 'Besprechungsraum',
+                                deviceId: twinName,
                                 temperature: reading.temperature,
                                 humidity: reading.humidity,
-                                co2ThresholdRed: co2ThresholdRed,
-                                co2ThresholdYellow: co2ThresholdYellow,
+                                co2ThresholdRed: process.env.co2ThresholdRed,
+                                co2ThresholdYellow: process.env.co2ThresholdYellow,
                                 co2: reading.co2,
                                 voc: reading.voc,
                                 light: reading.light,
                                 loudness: reading.audio
                             }
                             var msg = new Message(JSON.stringify(data));
-                            client.sendOutputEvent('generatedMessage', msg, (err, res) => {
-                                if (err) {
-                                    console.log(err);
-                                    return 
-                                }
-                            });
+                            client.sendOutputEvent('cloudMessage', msg, printResultFor('Sending message upstream'));
                         }).catch(err => {
                             console.log(err);
+                            throw err
                         });
-
-
-
 
                     } catch (err) {
                         throw err;

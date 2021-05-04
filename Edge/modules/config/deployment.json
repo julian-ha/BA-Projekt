@@ -36,24 +36,22 @@
             }
           },
           "modules": {
-            "emitmessages": {
-              "version": "1.0",
-              "type": "docker",
-              "status": "running",
-              "restartPolicy": "always",
-              "settings": {
-                "image": "containerregistryju.azurecr.io/emitmessages:1.0.0",
-                "createOptions": "{}"
-              }
-            },
             "generatemessages": {
               "version": "1.0",
               "type": "docker",
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/generatemessages:1.8.3",
+                "image": "containerregistryju.azurecr.io/generatemessages:3.0.3",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
+              },
+              "env": {
+                "co2ThresholdRed": {
+                  "value": -1
+                },
+                "co2ThresholdYellow": {
+                  "value": -1
+                }
               }
             }
             
@@ -64,8 +62,7 @@
         "properties.desired": {
           "schemaVersion": "1.0",
           "routes": {
-            "EdgeModuleToIoTHub": "FROM /messages/modules/emitmessages/outputs/* INTO $upstream",
-            "generatemessagesToemitmessages": "FROM /messages/modules/generatemessages/outputs/generatedMessage INTO BrokeredEndpoint(\"/modules/emitmessages/inputs/generatedMessage\")"
+            "EdgeModuleToIoTHub": "FROM /messages/modules/generatemessages/outputs/cloudMessage INTO $upstream"
           },
           "storeAndForwardConfiguration": {
             "timeToLiveSecs": 7200

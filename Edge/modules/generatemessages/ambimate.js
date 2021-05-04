@@ -9,18 +9,12 @@ class ambimate {
         this.opt_sensors = this.i2cl.readByteSync(this.adress, 0x82);
         this.reading = {};
     }
-
-    async delay(ms) {
-        new Promise(resolve => setTimeout(resolve, ms))
-    }
     
     async readAll() {
-        return new Promise((resolve, reject) => {
-            
             if (this.opt_sensors & 0x01) {
-                this.i2cl.readByteSync(this.adress, 0xC0, 0x7F);
+                this.i2cl.writeByteSync(this.adress, 0xC0, 0x7F);
             } else {
-                this.i2cl.readByteSync(this.adress, 0xC0, 0x3F);
+                this.i2cl.writeByteSync(this.adress, 0xC0, 0x3F);
             }
 
             setTimeout(() => {
@@ -38,9 +32,9 @@ class ambimate {
                     bat_volts: ((256 * (this.data[9] & 0x7F) + this.data[10]) / 1024.0) * (3.3 / 0.330),
                     status: this.data[0]
                 }
-                resolve(this.reading);
-            },250)
-        });
+                return(this.reading);
+            }, 200)
+
 
     }
 

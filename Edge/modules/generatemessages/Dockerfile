@@ -1,6 +1,6 @@
 
 
-FROM arm64v8/node:10-slim
+FROM arm64v8/node:10
 
 WORKDIR /app/
 

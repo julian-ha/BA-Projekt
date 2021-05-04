@@ -21,8 +21,8 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
     context.log(`Eventhub trigger function called for message array: ${IoTHubMessages}`);
 
     //Authorization (DefaultAzureCredential for Local Development)
-    const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
-    //const credentials = new DefaultAzureCredential();
+    //const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
+    const credentials = new DefaultAzureCredential();
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     for await (var message of IoTHubMessages) {
