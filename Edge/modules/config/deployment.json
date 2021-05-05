@@ -36,13 +36,34 @@
             }
           },
           "modules": {
-            "generatemessages": {
+            "lightsmodule": {
               "version": "1.0",
               "type": "docker",
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/generatemessages:3.0.3",
+                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:1.0.13",
+                "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
+              },
+              "env": {
+                "pinNumberGreen": {
+                  "value": 36
+                },
+                "pinNumberYellow": {
+                  "value": 38
+                },
+                "pinNumberRed": {
+                  "value": 40
+                }
+              }
+            },
+            "readingsmodule": {
+              "version": "1.0",
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "containerregistryju.azurecr.io/readingsmodulearm32v7:1.0.10",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {
@@ -62,7 +83,8 @@
         "properties.desired": {
           "schemaVersion": "1.0",
           "routes": {
-            "EdgeModuleToIoTHub": "FROM /messages/modules/generatemessages/outputs/cloudMessage INTO $upstream"
+            "EdgeModuleToIoTHub": "FROM /messages/modules/readingsmodule/outputs/cloudMessage INTO $upstream",
+            "readingsModuleToLightsModule": "FROM /messages/modules/readingsmodule/outputs/thresholdData INTO BrokeredEndpoint(\"/modules/lightsmodule/inputs/generatedMessage\")"
           },
           "storeAndForwardConfiguration": {
             "timeToLiveSecs": 7200

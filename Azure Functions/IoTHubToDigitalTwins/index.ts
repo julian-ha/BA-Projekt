@@ -40,9 +40,8 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
 
         //make request with patchObjects
         try {
-            var twinId: string = 'Besprechungsraum';
-            await digitalTwinsClient.updateDigitalTwin( twinId, jsonPatch);
-            context.log(`Updated Twin with Id: ${ twinId } with Temperature Reading: ${ message.temperature }`);
+            await digitalTwinsClient.updateDigitalTwin( message.deviceId, jsonPatch);
+            context.log(`Updated Twin with Id: ${ message.deviceId } with Temperature Reading: ${ message.temperature }`);
         } catch (err) {
             context.log(err);
         }

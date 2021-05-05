@@ -6,7 +6,7 @@ const connectionString: string = process.env.IoTHubConnectionString;
 const digitalTwinsUrl: string = process.env.digitalTwinsUrl;
 const adtInstanceUrl: string = process.env.adtInstanceUrl
 
-const moduleId: string = 'generatemessages';
+const moduleId: string = 'readingsmodule';
 
 interface parameters {
     deviceId: string,
@@ -23,7 +23,7 @@ const createPatchObject = (path: string, value: number) => {
 }
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    
+    context.log('receiving request');
     const IoTHubClient: Client = Client.fromConnectionString(connectionString);
     const parameters: parameters = {
         deviceId: (req.query.deviceId || req.body && req.body.deviceId),
@@ -66,7 +66,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
     var jsonPatch = [];
     jsonPatch.push(createPatchObject('/co2ThresholdRed', parameters.thresholdRed));
-    jsonPatch.push(createPatchObject('./co2ThresholdYellow', parameters.thresholdYellow));
+    jsonPatch.push(createPatchObject('/co2ThresholdYellow', parameters.thresholdYellow));
 
     try {
         await digitalTwinsClient.updateDigitalTwin(parameters.deviceId, jsonPatch);
