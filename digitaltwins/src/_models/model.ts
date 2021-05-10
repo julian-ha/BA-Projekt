@@ -83,7 +83,7 @@ const models: model[] = [
         "schema": "double"
       },
       {
-        "@type": "Property",
+        "@type": "Property", 
         "name": "occupancy",
         "schema": "boolean"
       },
@@ -121,6 +121,11 @@ const models: model[] = [
         "@type": "Property",
         "name": "light",
         "schema":  "double"
+      },
+      {
+        "@type": "Property",
+        "name": "connectionState",
+        "schema": "boolean"
       }
     ]
   },
@@ -149,9 +154,14 @@ const models: model[] = [
         "@type": "Property",
         "name": "ambientTemperature",
         "schema": "double"
+      },
+      {
+        "@type": "Property",
+        "name": "connectionState",
+        "schema": "boolean"
       }
     ]
   }   
 ]
 
-export default models
+export default models 

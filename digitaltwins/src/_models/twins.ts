@@ -53,7 +53,7 @@ var twins: twin[] = [
         ]
     },
     {
-        Id: 'Küche',
+        Id: 'Kueche',
         modelId: 'dtmi:com:digiz:room;1',
         properties: [
             {
@@ -103,6 +103,10 @@ var twins: twin[] = [
             {
                 key: 'co2',
                 value: 0
+            },
+            {
+                key: 'connectionState',
+                value: false
             }
         ]
     },
@@ -157,11 +161,15 @@ var twins: twin[] = [
             {
                 key: 'co2',
                 value: 0
+            },
+            {
+                key: 'connectionState',
+                value: false
             }
         ]
     },
     {
-        Id: 'Großraum',
+        Id: 'Grossraum',
         modelId: 'dtmi:com:digiz:room;1',
         properties: [
             {
@@ -211,6 +219,10 @@ var twins: twin[] = [
             {
                 key: 'co2',
                 value: 0
+            },
+            {
+                key: 'connectionState',
+                value: false
             }
         ]
     },
@@ -265,6 +277,10 @@ var twins: twin[] = [
             {
                 key: 'co2',
                 value: 0
+            },
+            {
+                key: 'connectionState',
+                value: false
             }
         ]
     },
@@ -288,6 +304,10 @@ var twins: twin[] = [
                 key: 'ambientTemperature',
                 value: 0
             },
+            {
+                key: 'connectionState',
+                value: false
+            }
             
         ]
     },    
@@ -311,6 +331,10 @@ var twins: twin[] = [
                 key: 'ambientTemperature',
                 value: 0
             },
+            {
+                key: 'connectionState',
+                value: false
+            }
             
         ]
     },  

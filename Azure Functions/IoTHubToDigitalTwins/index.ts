@@ -21,8 +21,8 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
     context.log(`Eventhub trigger function called for message array: ${IoTHubMessages}`);
 
     //Authorization (DefaultAzureCredential for Local Development)
-    //const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
-    const credentials = new DefaultAzureCredential();
+    const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
+    //const credentials = new DefaultAzureCredential();
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     for await (var message of IoTHubMessages) {
@@ -41,7 +41,7 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
         //make request with patchObjects
         try {
             await digitalTwinsClient.updateDigitalTwin( message.deviceId, jsonPatch);
-            context.log(`Updated Twin with Id: ${ message.deviceId } with Temperature Reading: ${ message.temperature }`);
+            context.log(`Updated Twin with Id: ${ message.deviceId }`);
         } catch (err) {
             context.log(err);
         }

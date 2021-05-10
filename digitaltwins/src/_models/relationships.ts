@@ -23,7 +23,7 @@ const relationships: relationship[] = [
         $relationshipId: 'ErdgeschossToKueche',
         $sourceId: 'Erdgeschoss',
         $relationshipName: 'hasRooms',
-        $targetId: 'Küche'
+        $targetId: 'Kueche'
     },
     {
         $relationshipId: 'ErdgeschossToAbstellraum',
@@ -35,17 +35,17 @@ const relationships: relationship[] = [
         $relationshipId: 'ErdgeschossToGroßraum',
         $sourceId: 'Erdgeschoss',
         $relationshipName: 'hasRooms',
-        $targetId: 'Großraum'
+        $targetId: 'Grossraum'
     },
     {
         $relationshipId: 'GroßraumToDrucker1',
-        $sourceId: 'Großraum',
+        $sourceId: 'Grossraum',
         $relationshipName: 'hasPrinters',
         $targetId: 'Drucker1'
     },
     {
         $relationshipId: 'GroßraumToDrucker2',
-        $sourceId: 'Großraum',
+        $sourceId: 'Grossraum',
         $relationshipName: 'hasPrinters',
         $targetId: 'Drucker2'
     }

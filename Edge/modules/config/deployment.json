@@ -42,7 +42,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:1.0.13",
+                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:2.0.0",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {
@@ -63,7 +63,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/readingsmodulearm32v7:1.0.10",
+                "image": "containerregistryju.azurecr.io/readingsmodulearm32v7:3.0.2",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {

@@ -8,7 +8,7 @@ const ambimateClass = require('./ambimate');
 const axios = require('axios');
 
 const twinName = process.env.IOTEDGE_DEVICEID;
-var data;
+global.data;
 
 
 var ambimate = new ambimateClass(0x2a, 1);
@@ -29,30 +29,34 @@ const printResultFor = (op) => {
 
 
 const retrieveTwinData = async (client, twinId) => {
+    return new Promise((resolve, reject) => {
     var config = {
         method: 'get',
         url: `https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/${twinId}?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==`,
         headers: { }
       };
       
-      try {
-          var response = await axios(config);
-          var twin = response.data[0];
-          process.env['co2ThresholdRed'] = parseInt(twin.co2ThresholdRed);
-          process.env['co2ThresholdYellow'] = parseInt(twin.co2ThresholdYellow);
-          console.log('retrieved data from Digital Twins');
-          return 
 
-      } catch (err) {
-          console.log('Error retrieving data from Digital Twins');
-      }
+          axios(config)
+            .then(response => {
+                var twin = response.data[0];
+                process.env['co2ThresholdRed'] = +twin.co2ThresholdRed;
+                process.env['co2ThresholdYellow'] = +twin.co2ThresholdYellow;
+                console.log('retrieved data from Digital Twins');
+                resolve();
+            })
+            .catch(err => {
+                console.log('Error retrieving data from Digital Twins');
+                reject(err);
+            })
+});
 }
 
 const setLights = (client, co2Value, thresholdRed, thresholdYellow) => {
     var msg = new Message ( JSON.stringify({
-        co2: parseInt(co2Value),
-        thresholdRed: parseInt(thresholdRed),
-        thresholdYellow: parseInt(thresholdYellow)
+        co2: +co2Value,
+        thresholdRed: +thresholdRed,
+        thresholdYellow: +thresholdYellow
     }));
 
     client.sendOutputEvent('thresholdData', msg, printResultFor('Sending message to lightsModule'));
@@ -74,9 +78,9 @@ Client.fromEnvironment(Transport, (err,client) => {
                 res.send(400, 'The Thresholdvalue for the red light has to be higher than the one for the yellow light.');
                 return
             } 
-            process.env['co2ThresholdYellow'] = parseInt(data.thresholdYellow);
-            process.env['co2ThresholdRed'] = parseInt(data.thresholdRed);
-            setLights(client, data.co2, process.env.co2ThresholdRed, process.env.co2ThresholdYellow);
+            process.env['co2ThresholdYellow'] = +data.thresholdYellow;
+            process.env['co2ThresholdRed'] = +data.thresholdRed;
+            setLights(client, global.data.co2, process.env.co2ThresholdRed, process.env.co2ThresholdYellow);
 
             res.send(200, 'method success');
         });
@@ -97,13 +101,13 @@ Client.fromEnvironment(Transport, (err,client) => {
                         
                             console.log(reading);
 
-                            data = {
+                            global.data = {
                                 timestamp: new Date(),
                                 deviceId: twinName,
                                 temperature: reading.temperature,
                                 humidity: reading.humidity,
-                                co2ThresholdRed: process.env.co2ThresholdRed,
-                                co2ThresholdYellow: process.env.co2ThresholdYellow,
+                                co2ThresholdRed: +process.env.co2ThresholdRed,
+                                co2ThresholdYellow: +process.env.co2ThresholdYellow,
                                 co2: reading.co2,
                                 voc: reading.voc,
                                 light: reading.light,
