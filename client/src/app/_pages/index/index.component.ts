@@ -1,4 +1,4 @@
-//import atlas from 'azure-maps-indoor';
+import * as atlasIndoor from 'azure-maps-indoor';
 import * as atlasMaps from 'azure-maps-control'
 import { DigitalTwinsService } from './../../_services/digital-twins.service';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
@@ -15,9 +15,9 @@ import { DirectMethodsService } from 'src/app/_services/direct-methods.service';
 })
 export class IndexComponent implements OnInit, AfterViewInit {
 
-  subscriptionKey: string = "cCdBlUlMYdAg124dF-cO2wPfUL7hoyiSVWWJilzgUYI";
-  tilesetId: string = "70a11539-0fd7-45d2-fadc-c36094f386d9";
-  statesetId: string = "388ed24b-8e5c-c867-b612-fb8c697317a7";
+  subscriptionKey: string = "f-zIQ0pKrW5c7JaALGNtdDCnO-uNg5Rp0u4-_pUGkSc";
+  tilesetId: string = "b556c4fc-c60d-7526-29fc-a07f51e2fec6";
+  statesetId: string = "097ffcd4-a233-f8b6-3706-b1f076e28864";
 
   twins: any = [];
   map: any;
@@ -32,8 +32,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
+    
     this.initMap();
-
     this.thresholdForm = this.formBuilder.group({
       thresholdRed: [100, Validators.required],
       thresholdYellow: [50, Validators.required]
@@ -41,7 +41,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-
+    
   }
 
   public initMap() {
@@ -53,33 +53,45 @@ export class IndexComponent implements OnInit, AfterViewInit {
       view: 'Auto',
       authOptions: {
         authType: atlasMaps.AuthenticationType.subscriptionKey,
-        subscriptionKey: "cCdBlUlMYdAg124dF-cO2wPfUL7hoyiSVWWJilzgUYI"
+        subscriptionKey: this.subscriptionKey
       },
       zoom: 19,
     });
-    // const levelControl = new atlas.control.LevelControl({
-     
-    // });
 
-    // const indoorManager = new atlas.indoor.IndoorManager(this.map, {
-    //   levelControl: levelControl, //level picker
-    //   tilesetId: this.tilesetId,
-    //   statesetId: this.statesetId // Optional
-    // });
+    this.map.events.add('ready', () => {
+            //Construct a zoom control and add it to the map.
+            this.map.controls.add(new atlasMaps.control.ZoomControl({
+              style: atlasMaps.ControlStyle.light,
+              zoomDelta: 1
+            }), {position: atlasMaps.ControlPosition.BottomLeft});
+      
+            const levelControl = new atlasIndoor.control.LevelControl();
+      
+            const indoorManager = new atlasIndoor.indoor.IndoorManager(this.map, {
+              levelControl: levelControl, //level picker
+              tilesetId: this.tilesetId,
+              statesetId: this.statesetId // Optional
+            });
+      
+            if (this.statesetId.length > 0) {
+              indoorManager.setDynamicStyling(true);
+            }
 
-    // if (this.statesetId.length > 0) {
-    //   indoorManager.setDynamicStyling(true);
-    // }
+          this.map.events.add("levelchanged", indoorManager, (eventData) => {
+            //put code that runs after a level has been changed
+            console.log("The level has changed:", eventData);
+          });
 
-    // map.events.add("levelchanged", indoorManager, (eventData) => {
-    //   //put code that runs after a level has been changed
-    //   console.log("The level has changed:", eventData);
-    // });
+          this.map.events.add("facilitychanged", indoorManager, (eventData) => {
+            //put code that runs after a facility has been changed
+            console.log("The facility has changed:", eventData);
+          });
+    });
 
-    // map.events.add("facilitychanged", indoorManager, (eventData) => {
-    //   //put code that runs after a facility has been changed
-    //   console.log("The facility has changed:", eventData);
-    // });
+
+
+
+
   }
 
 
@@ -122,10 +134,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
           console.log(err);
         }
       )
-
-
   }
-
 
 
 

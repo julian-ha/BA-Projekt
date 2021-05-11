@@ -5,84 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hello Bulma!</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-
     <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" type="text/css" />
     <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/indoor/0.1/atlas-indoor.min.css" type="text/css"/>
-  
+
     <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
     <script src="https://atlas.microsoft.com/sdk/javascript/indoor/0.1/atlas-indoor.min.js"></script>
-  </head>
+        </head>
   <body>
 
-<style>
-          #indoorMaps {
-        width: 100%;
-        height: 750px;
-        border: 2px solid red;
-      }
-</style>
 
-  <section class="section">
+    <style>
+        #indoormaps {
+            border: 1px solid blue;
+            height: 750px;
+            width: 100%;
+        }
+
+    </style>
+
+
+<section class="section">
     <div class="container">
-      <div class="columns">
-          <div class="column is-8">
-            <div id="indoorMaps">
+        <div class="columns">
+            <div class="column">
+                <div id="indoormaps">
 
+                </div>
             </div>
-          </div>
-          <div class="column is-4">
-
-          </div>
-      </div>
+        </div>
     </div>
-  </section>
-  </body>
+</section>
 
-  <script>
+<script>
     const subscriptionKey = "cCdBlUlMYdAg124dF-cO2wPfUL7hoyiSVWWJilzgUYI";
-    const tilesetId = "70a11539-0fd7-45d2-fadc-c36094f386d9";
-    const statesetId = "388ed24b-8e5c-c867-b612-fb8c697317a7";
+    const tilesetId = "b556c4fc-c60d-7526-29fc-a07f51e2fec6";
+      const statesetId = "097ffcd4-a233-f8b6-3706-b1f076e28864";
 
-    const map = new atlas.Map("indoorMaps", {
-      //use your facility's location
-      center: [10.157215, 48.684948],
-      //or, you can use bounds: [# west, # south, # east, # north] and replace # with your Map bounds
-      style: "grayscale_dark",
-      view: 'Auto',
-      authOptions: { 
-          authType: 'subscriptionKey',
-          subscriptionKey: subscriptionKey
-      },
-      zoom: 19,
-    });
+      const statesetId1 = "388ed24b-8e5c-c867-b612-fb8c697317a7";
+      const tilesetId1 = "70a11539-0fd7-45d2-fadc-c36094f386d9";
+const map = new atlas.Map("indoormaps", {
+  //use your facility's location
+  center: [10.157215, 48.684948],
+  //or, you can use bounds: [# west, # south, # east, # north] and replace # with your map's bounds
+  style: "grayscale_dark",
+  view: 'Auto',
+  authOptions: {
+      authType: 'subscriptionKey',
+      subscriptionKey: subscriptionKey
+  },
+  zoom: 19,
+});
 
-    const levelControl = new atlas.control.LevelControl({
-      position: "top-right",
-    });
+const levelControl = new atlas.control.LevelControl({
+        position: "top-right",
+      });
 
-    const indoorManager = new atlas.indoor.IndoorManager(map, {
-      levelControl: levelControl, //level picker
-      tilesetId: tilesetId,
-      statesetId: statesetId // Optional
-    });
+      const indoorManager = new atlas.indoor.IndoorManager(map, {
+        levelControl: levelControl, //level picker
+        tilesetId: tilesetId1,
+        statesetId: statesetId1 // Optional
+      });
 
-    if (statesetId.length > 0) {
-      indoorManager.setDynamicStyling(true);
-    }
+      if (statesetId.length > 0) {
+        indoorManager.setDynamicStyling(true);
+      }
 
-    map.events.add("levelchanged", indoorManager, (eventData) => {
-      //put code that runs after a level has been changed
-      console.log("The level has changed:", eventData);
-    });
+      map.events.add("levelchanged", indoorManager, (eventData) => {
+        //put code that runs after a level has been changed
+        console.log("The level has changed:", eventData);
+      });
 
-    map.events.add("facilitychanged", indoorManager, (eventData) => {
-      //put code that runs after a facility has been changed
-      console.log("The facility has changed:", eventData);
-    });
-  </script>
+      map.events.add("facilitychanged", indoorManager, (eventData) => {
+        //put code that runs after a facility has been changed
+        console.log("The facility has changed:", eventData);
+      });
+</script>
 
 
 
+  </body>
 </html>
-
-
