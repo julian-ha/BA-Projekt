@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { IndexComponent } from './_pages/index/index.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NotifierModule } from 'angular-notifier';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    NotifierModule
   ],
   providers: [], 
   bootstrap: [AppComponent] 

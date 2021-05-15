@@ -5,6 +5,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { first, map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DirectMethodsService } from 'src/app/_services/direct-methods.service';
+import { TwinData } from 'src/app/_models/twin-data';
 
 
 
@@ -13,30 +14,38 @@ import { DirectMethodsService } from 'src/app/_services/direct-methods.service';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
+
+
+
 export class IndexComponent implements OnInit, AfterViewInit {
 
-  subscriptionKey: string = "f-zIQ0pKrW5c7JaALGNtdDCnO-uNg5Rp0u4-_pUGkSc";
-  tilesetId: string = "b556c4fc-c60d-7526-29fc-a07f51e2fec6";
-  statesetId: string = "097ffcd4-a233-f8b6-3706-b1f076e28864";
+  subscriptionKey: string = "cCdBlUlMYdAg124dF-cO2wPfUL7hoyiSVWWJilzgUYI";
+  tilesetId: string = "70a11539-0fd7-45d2-fadc-c36094f386d9";
+  statesetId: string = "388ed24b-8e5c-c867-b612-fb8c697317a7";
 
   twins: any = [];
   map: any;
+  displayedTwin: TwinData;
+  adjustmentModal: boolean = false;
+  loadingTwinData: boolean = false;
 
   thresholdForm: FormGroup;
+
 
   constructor(
     private digitalTwinsService: DigitalTwinsService,
     private formBuilder: FormBuilder,
     private DirectMethodsService: DirectMethodsService,
-  ) { }
+  ) {
+   }
 
   ngOnInit(): void {
 
     
     this.initMap();
     this.thresholdForm = this.formBuilder.group({
-      thresholdRed: [100, Validators.required],
-      thresholdYellow: [50, Validators.required]
+      thresholdRed: [ 1000, Validators.required],
+      thresholdYellow: [500 , Validators.required]
     });
   }
 
@@ -45,7 +54,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   }
 
   public initMap() {
-    this.map = new atlasMaps.Map('indoorMaps', {
+    this.map = new atlasMaps.Map('indoormaps', {
       //use your facility's location
       center: [10.157215, 48.684948],
       //or, you can use bounds: [# west, # south, # east, # north] and replace # with your Map bounds
@@ -86,29 +95,49 @@ export class IndexComponent implements OnInit, AfterViewInit {
             //put code that runs after a facility has been changed
             console.log("The facility has changed:", eventData);
           });
+
     });
 
+          /* Upon a mouse click, log the feature properties to the browser's console. */
 
+          this.map.events.add("click", (e) => {
+
+            var features = this.map.layers.getRenderedShapes(e.position, "indoor");
+            //change the values on clicking on room
+            features.reduce(async (ids, feature) => {
+                if (feature.layer.id != "footprint_boundary_fill") {
+                  console.log(feature.properties.featureId);
+                 // make reuquest
+                  await this.getTwinData(feature.properties.featureId);
+                } 
+
+                
+            }, []);
+        });
 
 
 
   }
 
 
-  public getTwinData(twinId?: string) {
+  public getTwinData(mapsName: string) {
     this.twins = [];
-    this.digitalTwinsService.getTwinData(twinId || '')
+    this.digitalTwinsService.getTwinByMapsName(mapsName)
       .pipe(first())
       .subscribe(
         (response) => {
-          console.log(response);
+
           response.forEach(element => {
             this.twins.push(element);
           });
-          console.log(this.twins);
+          this.displayedTwin = this.twins[0];
+          console.log(this.displayedTwin);
+          this.thresholdForm.controls.thresholdRed.setValue(this.displayedTwin.co2ThresholdRed);
+          this.thresholdForm.controls.thresholdYellow.setValue(this.displayedTwin.co2ThresholdYellow);
         },
         (err) => {
           console.log(err);
+          this.displayedTwin = null;
         }
       )
   }
@@ -118,7 +147,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     if (this.thresholdForm.invalid) return 
     var data = {
-      deviceId: "DeviceJuHa",
+      deviceId: this.displayedTwin.$dtId,
       thresholdRed: this.thresholdForm.controls.thresholdRed.value,
       thresholdYellow: this.thresholdForm.controls.thresholdYellow.value,
   }
@@ -129,9 +158,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
       .subscribe(
         (response) => {
           console.log(response)
+          this.adjustmentModal = false;
+         
         },
         (err) => {
           console.log(err);
+          console.log('fe');
         }
       )
   }

@@ -14,11 +14,10 @@ export class DigitalTwinsService {
   ) { }
 
 
-  public getTwinData (twinId?: string) {
-    console.log(twinId);
-    return this.http.get(`https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/${twinId}?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==`)
+  public getTwinByMapsName (mapsName?: string) {
+    console.log(mapsName);
+    return this.http.get(`https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==&unitNameMaps=${ mapsName }`)
       .pipe(map((response: any) => {
-        console.log(response);
         return response
       }));
   }

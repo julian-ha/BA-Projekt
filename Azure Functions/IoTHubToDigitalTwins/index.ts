@@ -26,7 +26,7 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     for await (var message of IoTHubMessages) {
-        context.log(message);
+
         //create all Patch Objects
         var jsonPatch = [];
         jsonPatch.push(createPatchObject('/temperature', message.temperature));

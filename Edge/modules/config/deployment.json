@@ -63,7 +63,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/readingsmodulearm32v7:3.0.2",
+                "image": "containerregistryju.azurecr.io/readingsmodulearm32v7:3.0.5",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {

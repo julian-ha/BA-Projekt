@@ -6,14 +6,20 @@ const digitalTwinsUrl: string = process.env.digitalTwinsUrl;
 const adtInstanceUrl: string = process.env.adtInstanceUrl;
 
 
+
+
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
-    //const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
-    const credentials = new DefaultAzureCredential();
+    const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
+    //const credentials = new DefaultAzureCredential();
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
-    context.log(req.params);
-    context.log(req.params.twinId);
-    var query: string = req.params.twinId ? `SELECT * FROM DigitalTwins WHERE $dtId = '${req.params.twinId}' ` : 'SELECT * FROM DigitalTwins'
+
+    var query: string = 'SELECT * FROM DigitalTwins';
+
+    const unitNameMaps = ((req.body && req.body.unitNameMaps) || req.query.unitNameMaps);
+    if (unitNameMaps) query = `SELECT * FROM DigitalTwins WHERE unitNameMaps = '${unitNameMaps}'`;
+    
+    if (req.params.twinId) query = `SELECT * FROM DigitalTwins WHERE $dtId = '${req.params.twinId}'`;
 
     var result = [];
     for await (var twin of digitalTwinsClient.queryTwins(query)) {

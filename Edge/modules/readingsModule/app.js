@@ -97,6 +97,7 @@ Client.fromEnvironment(Transport, (err,client) => {
                             console.log('trying to get data from Digitaltwins');
                             await retrieveTwinData(client, twinName);
                         }
+                        
                         var reading = await ambimate.readAll();
                         
                             console.log(reading);
@@ -119,7 +120,8 @@ Client.fromEnvironment(Transport, (err,client) => {
                             
 
                     } catch (err) {
-                        throw err;
+                        console.log(err);
+                        //throw err;
                     }
 
                 }, 60000)

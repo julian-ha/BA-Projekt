@@ -29,7 +29,6 @@ const eventGridTrigger: AzureFunction = async function (context: Context, eventG
 
     const query = `SELECT * FROM digitaltwins WHERE $dtId = '${eventGridEvent.subject}'`;
     var queryResult = await queryTwin(digitalTwinsClient, query);
-    context.log(queryResult);
     //context.log(eventGridEvent.subject);
     for  (var patchObject of eventGridEvent.data.data.patch) {
         var isUpdateble = false;
