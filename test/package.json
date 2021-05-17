@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/digital-twins-core": "^1.0.3",
+    "@azure/identity": "^1.3.0",
     "azure-iothub": "^1.13.1",
     "i2c-bus": "^5.2.2"
   }

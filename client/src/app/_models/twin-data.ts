@@ -15,6 +15,7 @@ export interface TwinData {
         "light": number,
         "co2": number,
         "connectionState": boolean,
+        "printers"?: printerData[],
         "$metadata": {
             "$model": string,
             "roomName": {
@@ -56,4 +57,32 @@ export interface TwinData {
         }
 }
 
-
+export interface printerData {
+    
+        "$dtId": string,
+        "$etag":string,
+        "name": string,
+        "Description": string,
+        "brand": string,
+        "ambientTemperature": number
+        "connectionState": boolean,
+        "$metadata": {
+          "$model": string,
+          "name": {
+            "lastUpdateTime": Date
+          },
+          "Description": {
+            "lastUpdateTime": Date
+          },
+          "brand": {
+            "lastUpdateTime": Date
+          },
+          "ambientTemperature": {
+            "lastUpdateTime": Date
+          },
+          "connectionState": {
+            "lastUpdateTime": Date
+          }
+        }
+      
+}

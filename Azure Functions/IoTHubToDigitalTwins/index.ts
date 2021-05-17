@@ -27,6 +27,12 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
 
     for await (var message of IoTHubMessages) {
 
+        switch(message.deviceType) {
+            case 'room':
+                
+                break;
+        }
+
         //create all Patch Objects
         var jsonPatch = [];
         jsonPatch.push(createPatchObject('/temperature', message.temperature));

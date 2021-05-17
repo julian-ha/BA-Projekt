@@ -11,10 +11,18 @@
                 </div>
             </div>
             <div class="column is-4">
+                <div class="field">
+                    <div class="select is-large is-fullwidth">
+                        <select (change)="setStateset($event.target.value)">
+                          <option selected>Temperatur</option>
+                          <option>CO2</option>
+                        </select>
+                      </div>
+                </div>
                 <div class="box has-background-light">
                     Navigieren Sie auf der interaktiven Karte durch die Räume und lassen Sie sich die Daten anzeigen. <br>
                     <br>
-                    <div>
+                    <div *ngIf="mapSelection == 'Temperatur'">
                         <p>
                             <b>Legende Temperatur:</b>
                             <br>
@@ -22,6 +30,17 @@
                             > 24°C: gelb <br>
                             > 26°C: orange <br>
                             > 28°C:         <br>
+                            
+                        </p>
+                    </div>
+                    <div *ngIf="mapSelection == 'CO2'">
+                        <p>
+                            <b>Legende CO2:</b>
+                            <br>
+                            < 600 PPM: Grün<br>
+                            < 1000 PPM: Gelb <br>
+                            > 1000 PPM: Rot <br>
+
                             
                         </p>
                     </div>
@@ -52,6 +71,14 @@
                     </button>
                 </div>
 
+            </div>
+        </div>
+        <div class="columns is-multiline" *ngIf="displayedTwin.printers">
+            Zugehörige Drucker zu {{ displayedTwin.$dtId }}
+            <div class="column is-3" *ngFor="let printer of displayedTwin.printers">
+                <div class="notification">
+                    <p class="subtitle is-4">{{ printer.$dtId }}</p>
+                </div>
             </div>
         </div>
     </div>

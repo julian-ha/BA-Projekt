@@ -23,6 +23,9 @@ export class IndexComponent implements OnInit, AfterViewInit {
   tilesetId: string = "70a11539-0fd7-45d2-fadc-c36094f386d9";
   statesetId: string = "388ed24b-8e5c-c867-b612-fb8c697317a7";
 
+  mapSelection: string = "Temperatur"
+  
+
   twins: any = [];
   map: any;
   displayedTwin: TwinData;
@@ -52,6 +55,11 @@ export class IndexComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     
   }
+
+  public setStateset(event: string) {
+    console.log(event);
+    this.mapSelection = event;
+  } 
 
   public initMap() {
     this.map = new atlasMaps.Map('indoormaps', {

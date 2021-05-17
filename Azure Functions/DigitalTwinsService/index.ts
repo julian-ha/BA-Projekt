@@ -5,13 +5,20 @@ import { DefaultAzureCredential, ManagedIdentityCredential } from "@azure/identi
 const digitalTwinsUrl: string = process.env.digitalTwinsUrl;
 const adtInstanceUrl: string = process.env.adtInstanceUrl;
 
-
+const queryTwin = async (client: DigitalTwinsClient, query: string) => {
+    var result = await client.queryTwins(query);
+    var twins = [];
+    for await (var twin of result) {
+        twins.push(twin);
+    }
+    return twins
+} 
 
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
-    const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
-    //const credentials = new DefaultAzureCredential();
+    //const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
+    const credentials = new DefaultAzureCredential();
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     var query: string = 'SELECT * FROM DigitalTwins';
@@ -21,12 +28,37 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     
     if (req.params.twinId) query = `SELECT * FROM DigitalTwins WHERE $dtId = '${req.params.twinId}'`;
 
-    var result = [];
-    for await (var twin of digitalTwinsClient.queryTwins(query)) {
-        result.push(twin);
+    const withPrinters = ((req.body && req.body.withPrinters) || req.query.withPrinters);
+    if (withPrinters) {
+        if (!req.params.twinId) {
+            context.res = {
+                status: 404,
+                body: {
+                    errMessage: `Specified a twinId`
+                }
+            }
+            return
+        }
+        query = `SELECT T, CT FROM DIGITALTWINS T JOIN CT RELATED T.hasPrinters WHERE T.$dtId = '${req.params.twinId}'`;
+        var twins = await queryTwin(digitalTwinsClient, query);
+        var result = twins[0].T;
+        result.printers = [];
+        twins.forEach(element => {
+            result.printers.push(element.CT);
+        });
+        context.res = {
+            status: 200,
+            body: result
+        }
+
+        return
     }
-    
-    if (result.length === 0) {
+
+
+
+
+    var twins = await queryTwin(digitalTwinsClient, query)
+    if (twins.length === 0) {
         context.res = {
             status: 404,
             body: {
@@ -43,7 +75,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
     context.res = {
         // status: 200, /* Defaults to 200 */
-        body: result
+        body: twins
     };
 
 };
