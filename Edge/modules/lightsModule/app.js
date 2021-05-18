@@ -12,15 +12,11 @@ const greenPin = process.env.pinNumberGreen;
 gpio.setup(redPin, gpio.DIR_OUT);
 gpio.setup(yellowPin, gpio.DIR_OUT);
 gpio.setup(greenPin, gpio.DIR_OUT);
+console.log('pins initialized');
+
 
 const setLights = (co2Value, thresholdRed, thresholdYellow) => {
-  // initialize the pins
 
-    console.log('setting lights');
-    console.log(`red: ${thresholdRed}`);
-    console.log(`yellow: ${thresholdYellow}`);
-    console.log(`co2: ${co2Value}`);
-  
     if ( co2Value >= thresholdRed) {
       console.log('setting lights for red');
       gpio.write(redPin, true);
@@ -98,6 +94,7 @@ function printResultFor(op) {
     }
     if (res) {
       console.log(op + ' status: ' + res.constructor.name);
+      console.log(new Date())
     }
   };
 }

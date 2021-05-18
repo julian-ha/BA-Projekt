@@ -17,6 +17,26 @@ const createPatchObject = (path: string, value: any) => {
     }
 }
 
+const createPatchObjectRoom = (message: message) => {
+    var jsonPatch = [];
+    jsonPatch.push(createPatchObject('/temperature', message.temperature));
+    jsonPatch.push(createPatchObject('/humidity', message.humidity));
+    jsonPatch.push(createPatchObject('/co2ThresholdRed', message.co2ThresholdRed)); 
+    jsonPatch.push(createPatchObject('/co2ThresholdYellow', message.co2ThresholdYellow));
+    jsonPatch.push(createPatchObject('/co2', message.co2));
+    jsonPatch.push(createPatchObject('/voc', message.voc));
+    jsonPatch.push(createPatchObject('/light', message.light));
+    jsonPatch.push(createPatchObject('/loudness', message.loudness));
+
+    return jsonPatch
+}
+
+const createPatchObjectPrinter = (message: message) => {
+    var jsonPatch = [];
+    jsonPatch.push(createPatchObject('/ambientTemperature', message.temperature));
+    return jsonPatch
+}
+
 const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMessages: message[]): Promise<void> {
     context.log(`Eventhub trigger function called for message array: ${IoTHubMessages}`);
 
@@ -26,25 +46,18 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     for await (var message of IoTHubMessages) {
-
+        context.log(message)
+        var jsonPatch;
         switch(message.deviceType) {
             case 'room':
-                
+                jsonPatch = createPatchObjectRoom(message);
+                break;
+            case 'printer':
+                jsonPatch = createPatchObjectPrinter(message);
+                context.bindings.savePrinterData = JSON.stringify(message);
                 break;
         }
-
-        //create all Patch Objects
-        var jsonPatch = [];
-        jsonPatch.push(createPatchObject('/temperature', message.temperature));
-        jsonPatch.push(createPatchObject('/humidity', message.humidity));
-        jsonPatch.push(createPatchObject('/co2ThresholdRed', message.co2ThresholdRed)); 
-        jsonPatch.push(createPatchObject('/co2ThresholdYellow', message.co2ThresholdYellow));
-        jsonPatch.push(createPatchObject('/co2', message.co2));
-        jsonPatch.push(createPatchObject('/voc', message.voc));
-        jsonPatch.push(createPatchObject('/light', message.light));
-        jsonPatch.push(createPatchObject('/loudness', message.loudness));
-
-        //make request with patchObjects
+        context.log(jsonPatch);
         try {
             await digitalTwinsClient.updateDigitalTwin( message.deviceId, jsonPatch);
             context.log(`Updated Twin with Id: ${ message.deviceId }`);

@@ -3,15 +3,10 @@
 const Transport = require('azure-iot-device-mqtt').Mqtt;
 const Client = require('azure-iot-device').ModuleClient;
 const Message = require('azure-iot-device').Message;
-const Bme680 = require('bme680-sensor').Bme680;
 
 const deviceId = process.env.IOTEDGE_DEVICEID;
 
-var bme680  = new Bme680(1, 0x76);
 
-bme680.initialize().then(() => {
-    console.log('Sensor initialized');
-});
 
 
 
@@ -40,17 +35,15 @@ Client.fromEnvironment(Transport, (err, client) => {
 
         console.log('IoT Hub module client initialized');
 
-        setInterval(async () => {
-            var reading = await bme680.getSensorData();
-            console.log(reading.data);
+        setInterval(async () => { 
             var data = {
-                deviceId: deviceId,
+                deviceId: 'Drucker1',
+                deviceType: 'printer',
                 timestamp: new Date(),
-                temperature: reading.data.temperature
+                temperature: Math.floor(Math.random() * 40)
             }
             var msg = new Message(JSON.stringify(data));
             client.sendOutputEvent('cloudMessage', msg, printResultFor('Sending message upstream'));
         }, 60000);
-
     });
 });

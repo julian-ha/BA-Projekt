@@ -11,4 +11,5 @@ export default interface message {
     voc?: number,
     light?: number,
     loudness?: number,
+    ambientTemperature?: number;
 }

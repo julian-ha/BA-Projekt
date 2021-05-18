@@ -13,7 +13,7 @@ deviceId = environ["IOTEDGE_DEVICEID"]
 ambimate = ambimateClass.ambimate()
 
 def retrieveTwinData():
-    url = "https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/Abstellraum?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg=="
+    url = "https://baprojectfunction.azurewebsites.net/api/digitaltwinsservicedevice/" + deviceId + "?code=FeG4Yoz75u1ZdZKaM9CPhO7jaOmaMkXEAi6vyGtXXPEM0JEZjRR5WQ=="
 
     payload={}
     headers = {}
@@ -29,14 +29,14 @@ def retrieveTwinData():
 
 
 #FUnktion set Lights
-def setLights(module_client, co2Value, thresholdRed, thresholdYellow):
+async def setLights(module_client, co2Value, thresholdRed, thresholdYellow):
     msg = Message(json.dumps({
         "co2": int(co2Value),
         "thresholdRed": int(thresholdRed),
         "thresholdYellow": int(thresholdYellow)
     }))
 
-    module_client.send_message_to_output(msg, "thresholdData")
+    await module_client.send_message_to_output(msg, "thresholdData")
     print('send Message to lightsModule')
 
 
@@ -51,6 +51,9 @@ async def main():
             print('direct method')
             print(method_request.payload)
             payload = json.loads(method_request.payload)
+            environ["co2ThresholdRed"] = str(payload["thresholdRed"])
+            environ["co2ThresholdYellow"] = str(payload["thresholdYellow"])
+            await setLights(module_client, data["co2"], payload["thresholdRed"], payload["thresholdYellow"])
 
             if int(payload["thresholdYellow"]) >= int(payload["thresholdRed"]):
                 method_response = MethodResponse.create_from_method_request(method_request, 400, None)
@@ -78,7 +81,7 @@ async def main():
                 "deviceType": "room",
                 "temperature": reading.temperature,
                 "humidity": reading.humidity,
-                "co2hresholdRed": int(environ['co2ThresholdRed']),
+                "co2ThresholdRed": int(environ['co2ThresholdRed']),
                 "co2ThresholdYellow": int(environ['co2ThresholdYellow']),
                 "co2": reading.co2,
                 "voc": reading.voc,
@@ -88,9 +91,10 @@ async def main():
             print(data["co2"])
 
             msg = Message(json.dumps(data))
-            setLights(module_client, data["co2"], environ['co2ThresholdRed'], environ['co2ThresholdYellow'])
+            await setLights(module_client, data["co2"], environ['co2ThresholdRed'], environ['co2ThresholdYellow'])
             await module_client.send_message_to_output (msg, "cloudMessage")
             print('sent Message upstream')
+
 
         except IOError:
             print('IO Error')

@@ -27,8 +27,8 @@ const getRoomDatawithPrinters = (twins) => {
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
-    //const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
-    const credentials = new DefaultAzureCredential();
+    const credentials = new ManagedIdentityCredential(digitalTwinsUrl);
+    //const credentials = new DefaultAzureCredential();
     const digitalTwinsClient = new DigitalTwinsClient(adtInstanceUrl, credentials);
 
     const unitNameMaps = ((req.body && req.body.unitNameMaps) || req.query.unitNameMaps);
@@ -43,8 +43,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
 
     var query = `SELECT * FROM DigitalTwins WHERE unitNameMaps = '${ unitNameMaps }'`;
-    var result = await queryTwin(digitalTwinsClient, query);
-    if (result.length == 0) {
+    var resultTwins = await queryTwin(digitalTwinsClient, query);
+    if (resultTwins.length == 0) {
         context.res = {
             status: 400,
             body: {
@@ -53,9 +53,10 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         }
         return;
     }
+    var result = resultTwins[0];
 
         //standard Request
-        query = `SELECT T, CT FROM DIGITALTWINS T JOIN CT RELATED T.hasPrinters WHERE T.$dtId = '${result[0].$dtId}'`;
+        query = `SELECT T, CT FROM DIGITALTWINS T JOIN CT RELATED T.hasPrinters WHERE T.$dtId = '${result.$dtId}'`;
         context.log(query);
         var resultPrinters = await queryTwin(digitalTwinsClient, query);
         context.log(resultPrinters);

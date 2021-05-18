@@ -1,5 +1,8 @@
 {
   "version": "2.0",
+  "extensions": {
+    "cosmosDB": {}
+  },
   "logging": {
     "applicationInsights": {
       "samplingSettings": {

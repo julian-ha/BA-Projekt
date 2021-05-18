@@ -42,7 +42,7 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:2.0.0",
+                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:3.0.0",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {
@@ -63,7 +63,25 @@
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/readingsmodulepython:1.0.21",
+                "image": "containerregistryju.azurecr.io/readingsmodulepython:1.0.28",
+                "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
+              },
+              "env": {
+                "co2ThresholdRed": {
+                  "value": -1
+                },
+                "co2ThresholdYellow": {
+                  "value": -1
+                }
+              }
+            },
+            "printermodule": {
+              "version": "1.0",
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "containerregistryju.azurecr.io/printermodule:1.0.2",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {
@@ -84,6 +102,7 @@
           "schemaVersion": "1.0",
           "routes": {
             "EdgeModuleToIoTHub": "FROM /messages/modules/readingsmodule/outputs/cloudMessage INTO $upstream",
+            "printerModule": "FROM /messages/modules/printermodule/outputs/cloudMessage INTO $upstream",
             "readingsModuleToLightsModule": "FROM /messages/modules/readingsmodule/outputs/thresholdData INTO BrokeredEndpoint(\"/modules/lightsmodule/inputs/generatedMessage\")"
           },
           "storeAndForwardConfiguration": {
