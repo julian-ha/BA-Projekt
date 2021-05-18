@@ -73,11 +73,18 @@
 
             </div>
         </div>
-        <div class="columns is-multiline" *ngIf="displayedTwin.printers">
-            Zugehörige Drucker zu {{ displayedTwin.$dtId }}
-            <div class="column is-3" *ngFor="let printer of displayedTwin.printers">
-                <div class="notification">
-                    <p class="subtitle is-4">{{ printer.$dtId }}</p>
+        <div *ngIf="displayedTwin.printers">
+            <h2 class="title is-4">Zugehörige Drucker zu {{ displayedTwin.$dtId }}</h2>
+            <div class="columns is-multiline">
+                
+                <div class="column is-3" *ngFor="let printer of displayedTwin.printers">
+                    <div class="notification">
+                        <p class="subtitle is-4">{{ printer.$dtId }}</p>
+
+                        <button class="button is-link is-rounded">
+                            Zeige Verlaufsdaten
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,9 +92,19 @@
 </section>
 
 
-<div>
-    
-</div>
+
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="image is-4by3">
+        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="">
+      </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+
+
+
 <div *ngIf="adjustmentModal" class="modal is-active">
     <div class="modal-background"></div>
     <div class="modal-content">
