@@ -68,7 +68,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
       //or, you can use bounds: [# west, # south, # east, # north] and replace # with your Map bounds
       style: "grayscale_dark",
       view: 'Auto',
-      authOptions: {
+      authOptions: { 
         authType: atlasMaps.AuthenticationType.subscriptionKey,
         subscriptionKey: this.subscriptionKey
       },
