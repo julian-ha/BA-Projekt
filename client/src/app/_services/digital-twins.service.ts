@@ -15,7 +15,6 @@ export class DigitalTwinsService {
 
 
   public getTwinByMapsName (mapsName?: string) {
-    console.log(mapsName);
     return this.http.get(`https://baprojectfunction.azurewebsites.net/api/digitaltwinsservice/?code=20PnRvauC5mIwecu3uwf7f1jzuKY2yZFRUOu6AMIE2bLoFLTlKNgTg==&unitNameMaps=${ mapsName }`)
       .pipe(map((response: any) => {
         return response

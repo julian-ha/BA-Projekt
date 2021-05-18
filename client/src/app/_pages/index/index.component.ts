@@ -129,17 +129,18 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
 
   public getTwinData(mapsName: string) {
+    console.log(mapsName);
     this.twins = [];
     this.digitalTwinsService.getTwinByMapsName(mapsName)
       .pipe(first())
       .subscribe(
         (response) => {
-
+          console.log(response);
           response.forEach(element => {
             this.twins.push(element);
           });
           this.displayedTwin = this.twins[0];
-          console.log(this.displayedTwin);
+          console.log(`this is the displayed twin ${this.displayedTwin}`);
           this.thresholdForm.controls.thresholdRed.setValue(this.displayedTwin.co2ThresholdRed);
           this.thresholdForm.controls.thresholdYellow.setValue(this.displayedTwin.co2ThresholdYellow);
         },
