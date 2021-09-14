@@ -2,7 +2,7 @@
 
 ## Architektur
 
-
+Innerhalb der BA.
 
 ### Azure Functions
 
@@ -44,4 +44,22 @@ Initialisierungsprojekt, um die Daten und Relationen innerhalb der Digital Twins
 
 
 ### !!! Wichtig ist noch, dass im August der Azure Maps Creator Dienst umfangreichend angepasst wurde. Inwieweit das Auswirkungen auf die FUnktionalität hat, ist noch nicht analysiert !!!
+
+
+
+# Was gibt es noch zu tun
+
+To Do (mal nur für die Raumgeräte. Die 3D Druck Geräte mal ausgelassen.)
+
+
+Verkabelung & löten der einzelnen Sensoren (Ambimate)
+Ambimate Sensor wird per I2C angeschlossen. Pins der Co2 Ampel können in der Deployment.json konfiguriert werden.
+
+Deployen der Module auf das einzelne Gerät
+
+Ressourcen derzeit auf meinem eigenen Azure Account deployed. (Umzug auf den Account des Digitalisierungszentrums)
+
+Aufbau der Geräte im DigiZ (verbinden mit WLAN im Gebäude)
+
+(Optional) Schönes Gehäuse für das Gerät mit dem 3D Drucker 
 
