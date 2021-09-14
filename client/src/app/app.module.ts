@@ -7,12 +7,15 @@ import { IndexComponent } from './_pages/index/index.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NotifierModule } from 'angular-notifier';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { LoadingScreenComponent } from './_components/loading-screen/loading-screen.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    IndexComponent
+    IndexComponent,
+    LoadingScreenComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +23,10 @@ import { NotifierModule } from 'angular-notifier';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    NotifierModule
+    NotifierModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
   ],
   providers: [], 
   bootstrap: [AppComponent] 

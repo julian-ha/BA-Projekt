@@ -36,5 +36,12 @@ Die Urls der einzeln aufgerufenen Services im _services Ordner
 Ein Projekt von Microsoft, um die Relationen des Digitalen Zwillings visuell darzustellen.
 
 ### Edge -> modules
-config/deployment.json: Die deployment.json Datei für die Geräte: (Was muss noch angepasst werden?)
+Erläuterung im Ordner.
+
+### digital twins
+Initialisierungsprojekt, um die Daten und Relationen innerhalb der Digital Twins Ressource zu erstellen und zu initialisieren. Anschließend, kann mittels des digital-twins-explorers visuell überprüft werden, ob alles ausreichend erstellt wurde.
+
+
+
+### !!! Wichtig ist noch, dass im August der Azure Maps Creator Dienst umfangreichend angepasst wurde. Inwieweit das Auswirkungen auf die FUnktionalität hat, ist noch nicht analysiert !!!
 

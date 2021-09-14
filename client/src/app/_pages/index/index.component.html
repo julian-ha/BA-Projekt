@@ -1,3 +1,5 @@
+
+
 <section class="section">
     <div class="container">
         <h1 class="title is-3">
@@ -7,12 +9,12 @@
             <div class="column is-8">
                 
                 <div id="indoormaps">
-
                 </div>
+                
             </div>
             <div class="column is-4">
                 <div class="field">
-                    <div class="select is-large is-fullwidth">
+                    <div class="select is-fullwidth">
                         <select (change)="setStateset($event.target.value)">
                           <option selected>Temperatur</option>
                           <option>CO2</option>
@@ -27,9 +29,9 @@
                             <b>Legende Temperatur:</b>
                             <br>
                             < 22°C: blau <br>
-                            > 24°C: gelb <br>
-                            > 26°C: orange <br>
-                            > 28°C:         <br>
+                            < 24°C: gelb <br>
+                            < 26°C: orange <br>
+                            > 28°C: rot      <br>
                             
                         </p>
                     </div>
@@ -57,17 +59,17 @@
                         
                     </div>
                     <p class="subtitle is-4">Messdaten für {{ displayedTwin.$dtId }}</p>
-                    <p>Temperatur:{{ displayedTwin.temperature }} <br>
-                        Luftfeuchtigkeit: {{ displayedTwin.humidity }} <br>
+                    <p>Temperatur: {{ displayedTwin.temperature }} °C <br>
+                        Luftfeuchtigkeit: {{ displayedTwin.humidity }} % <br>
                         VOC: {{ displayedTwin.voc }} <br>
-                        CO2: {{ displayedTwin.co2 }} <br>
-                        Grenzwert Gelb: {{ displayedTwin.co2ThresholdYellow }} <br>
-                        Grenzwert Rot: {{ displayedTwin.co2ThresholdRed }}
+                        CO2: {{ displayedTwin.co2 }} PPM <br>
+                        Grenzwert Gelb: {{ displayedTwin.co2ThresholdYellow }} PPM<br>
+                        Grenzwert Rot: {{ displayedTwin.co2ThresholdRed }} PPM
                     
                     </p>
                     <br>
                     <button (click)="adjustmentModal = true" class="button is-rounded is-link">
-                        Adjust Thresholds
+                        Grenzwerte anpassen
                     </button>
                 </div>
 
@@ -80,8 +82,12 @@
                 <div class="column is-3" *ngFor="let printer of displayedTwin.printers">
                     <div class="notification">
                         <p class="subtitle is-4">{{ printer.$dtId }}</p>
+                        <p>
+                            Innentemperatur: {{ printer.ambientTemperature }} °C
+                        </p>
+                        <br>
 
-                        <button class="button is-link is-rounded">
+                        <button class="button is-link is-rounded" (click)="showTempData(printer.$dtId)">
                             Zeige Verlaufsdaten
                         </button>
                     </div>
@@ -93,14 +99,13 @@
 
 
 
-<div class="modal">
+
+<div *ngIf="tempDataModal" class="modal is-active">
     <div class="modal-background"></div>
-    <div class="modal-content">
-      <p class="image is-4by3">
-        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="">
-      </p>
+    <div class="modal-content has-background-light modal-content-tempdata">
+        <div echarts [options]="chartOption" class="demo-chart"></div>
     </div>
-    <button class="modal-close is-large" aria-label="close"></button>
+    <button class="modal-close is-large" aria-label="close" (click)="showTempData()"></button>
   </div>
 
 
@@ -114,19 +119,19 @@
             <h2 class="title is-4">Passen Sie die Grenzwerte für {{ displayedTwin.$dtId }} an.</h2>
             <form [formGroup]="thresholdForm" (ngSubmit)="onSubmit($event)">
                 <div class="field">
-                    <label for="" class="label">Grenzwert Gelb</label>
+                    <label for="" class="label">Grenzwert Gelb (in PPM)</label>
                     <div>
                         <input type="number" formControlName="thresholdYellow" placeholder="500" value="{{ displayedTwin.co2ThresholdYellow }}" class="input">
                     </div>
                 </div>
                 <div class="field">
-                  <label for="" class="label">Grenzwert Rot</label>
+                  <label for="" class="label">Grenzwert Rot (in PPM)</label>
                   <div>
                       <input type="number" formControlName="thresholdRed" placeholder="1000" value="{{ displayedTwin.co2ThresholdRed }}" class="input">
                   </div>
               </div>
               <div class="field">
-                  <button type="submit" class="button is-rounded is-link is-fullwidth">
+                  <button type="submit" class="button is-rounded is-link">
                       Anpassen
                   </button>
               </div>
@@ -137,43 +142,13 @@
   </div>
 
 
-  <div class="notification statusmessage has-background-success has-text-white">
+
+  <div class="notification statusmessage has-text-white"  [ngClass]="{
+    'has-background-success': statusmessage.status == 'success',
+    'has-background-danger': statusmessage.status == 'error'
+  }" *ngIf="statusmessage">
     <!-- <button class="delete"></button> -->
-   Successfully updated values for Device Abstellraum
+  {{ statusmessage.message }}
   </div>
-
-
-
-
-<!-- <section class="section">
-    <div class="container">
-        <div class="columns is-multiline">
-            <div *ngFor="let twin of twins" class=" column is-3">
-                <div class="twin-card has-background-light">
-                    <h1 class="title is-5 has-text-black has-text-centered">{{ twin.$dtId }}</h1>
-                    <div style="margin:0.5rem">
-                        <p *ngIf="twin.temperature">
-                            Temperature: <span class="rightsided">{{ twin.temperature }} °C</span> <br>
-                            ThresholdYellow: <span class="rightsided"> {{ twin.co2ThresholdYellow }}</span> <br>
-                            ThresholdRed: <span class="rightsided"> {{ twin.co2ThresholdRed }}</span>
-
-                        </p>
-                    </div>
-                    <form [formGroup]="thresholdForm" (ngSubmit)="onSubmit($event)" style="margin:0.5rem">
-                        <div class="field">
-                            <input type="number" formControlName="thresholdYellow" placeholder="Threshold Red"  class="input">
-                        </div>
-                        <div class="field">
-                            <input type="number" formControlName="thresholdRed" placeholder="Threshold Yellow"  class="input">
-                        </div>
-                        <button type="submit" class="button is-link is-rounded is-fullwidth">
-                            Change Thresholds
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> -->
 
 

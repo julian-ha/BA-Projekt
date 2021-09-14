@@ -32,7 +32,7 @@ const createModels = async (client: DigitalTwinsClient, models: model[]) => {
             try {
                 await client.createModels([model]);
                 console.info(`Created model with Id: ${model['@id']} `)
-            } catch (err) {
+            } catch (err: any) {
                 if (err.statusCode === 409) {
                     console.info(`Model with Id: ${ model['@id'] } already exists`);
                 } else {

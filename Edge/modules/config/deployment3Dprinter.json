@@ -36,34 +36,13 @@
             }
           },
           "modules": {
-            "lightsmodule": {
+            "printermodule": {
               "version": "1.0",
               "type": "docker",
               "status": "running",
               "restartPolicy": "always",
               "settings": {
-                "image": "containerregistryju.azurecr.io/lightsmodulearm32v7:3.0.0",
-                "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
-              },
-              "env": {
-                "pinNumberGreen": {
-                  "value": 36
-                },
-                "pinNumberYellow": {
-                  "value": 38
-                },
-                "pinNumberRed": {
-                  "value": 40
-                }
-              }
-            },
-            "readingsmodule": {
-              "version": "1.0",
-              "type": "docker",
-              "status": "running",
-              "restartPolicy": "always",
-              "settings": {
-                "image": "containerregistryju.azurecr.io/readingsmodulepython:1.0.28",
+                "image": "containerregistryju.azurecr.io/printermodule:1.0.2",
                 "createOptions": "{\"HostConfig\": {\"Privileged\": true}}"
               },
               "env": {
@@ -74,7 +53,8 @@
                   "value": -1
                 }
               }
-            }            
+            }
+            
           }
         }
       },

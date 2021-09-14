@@ -1,6 +1,7 @@
 import { DigitalTwinsClient } from "@azure/digital-twins-core";
 import { AzureFunction, Context } from "@azure/functions"
 import { DefaultAzureCredential, ManagedIdentityCredential, UsernamePasswordCredential } from "@azure/identity";
+import axios, { AxiosRequestConfig } from "axios";
 import message from "./_interfaces/message";
 
 
@@ -15,6 +16,31 @@ const createPatchObject = (path: string, value: any) => {
         "path": path,
         "value": value
     }
+}
+
+const sendToLogicApps = (message: message) => {
+    return new Promise(async(resolve, reject) => {
+        const endpoint = "https://prod-245.westeurope.logic.azure.com:443/workflows/120de8b4830346e2b435658fa2cbaf03/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=vdqNa2rBRMc8FmVT_fCL0yKMDULfxp6xuPPFAQYupOc";
+        var config: AxiosRequestConfig = {
+            method: "post",
+            url: endpoint,
+            headers: { 
+                'Content-Type': 'application/json'
+              },
+            data: JSON.stringify({
+                deviceId: message.deviceId,
+                temperature: message.temperature
+            })
+        }
+        await axios(config)
+        .then((response) => {
+            resolve(response)
+        })
+        .catch((err) => {
+           reject(err);
+        })
+    });
+
 }
 
 const createPatchObjectRoom = (message: message) => {
@@ -55,6 +81,8 @@ const IoTHubTrigger: AzureFunction = async function (context: Context, IoTHubMes
             case 'printer':
                 jsonPatch = createPatchObjectPrinter(message);
                 context.bindings.savePrinterData = JSON.stringify(message);
+                context.bindings.saveToBlob = JSON.stringify(message);
+                if (message.temperature >= 25)  await sendToLogicApps(message);
                 break;
         }
         context.log(jsonPatch);

@@ -17,6 +17,13 @@
       "createIfNotExists": false,
       "connectionStringSetting": "CosmosDBConnection",
       "direction": "out"
+  }, 
+  {
+    "name": "saveToBlob",
+    "type": "blob",
+    "path": "digitaltwins/printerdata",
+    "connection": "storageConnection",
+    "direction": "out"
   }
   ],
   "scriptFile": "../dist/IoTHubToDigitalTwins/index.js"

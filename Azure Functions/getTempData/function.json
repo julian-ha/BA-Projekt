@@ -1,0 +1,30 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ],
+      "route": "printers/{printerId}"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "cosmosDB",
+      "name": "tempItems",
+      "databaseName": "DigitalTwin",
+      "collectionName": "PrinterData",
+      "connectionStringSetting": "CosmosDBConnection",
+      "direction": "in",
+      "sqlQuery": "SELECT P.temperature, P.timestamp FROM P WHERE P.deviceId = {printerId} AND P.timestamp >= DateTimeAdd('hh', -24, GetCurrentDateTime())"
+  }
+  ],
+  "scriptFile": "../dist/getTempData/index.js"
+}
